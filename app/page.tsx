@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,6 +52,7 @@ export default function BullsEyeAggregator() {
     setChatMessages(newMessages);
     setUserInput("");
   };
+  // const logo = Image.path("./logo.png");
 
   return (
     <div
@@ -65,6 +67,7 @@ export default function BullsEyeAggregator() {
               <span className="hidden font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 sm:inline-block">
                 BullsEye
               </span>
+              {/* <img src={logo} alt="Logo" className="h-6 w-6" /> */}
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
@@ -99,6 +102,7 @@ export default function BullsEyeAggregator() {
           >
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle Menu</span>
+            AI Assistant
           </Button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
@@ -463,13 +467,16 @@ export default function BullsEyeAggregator() {
             </CardContent>
           </Card>
         ) : (
-          <Button
-            size="icon"
-            className="rounded-full w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white"
-            onClick={() => setChatOpen(true)}
-          >
-            <MessageCircle className="h-6 w-6" />
-          </Button>
+          <div className="p-5 flex items-center justify-center space-x-4 rounded-full h-12 bg-blue-500 text-white">
+            <p className="text-center">Ai Assistant</p>
+            <Button
+              size="icon"
+              className=" w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={() => setChatOpen(true)}
+            >
+              <MessageCircle className="h-6 w-6" />
+            </Button>
+          </div>
         )}
       </div>
     </div>
