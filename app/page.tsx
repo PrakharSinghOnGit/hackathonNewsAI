@@ -59,7 +59,7 @@ export default function BullsEyeAggregator() {
       } transition-colors duration-200`}
     >
       <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
-        <div className="container flex h-14 items-center">
+        <div className="container flex h-14 items-center ml-10">
           <div className="mr-4 hidden md:flex">
             <a className="mr-6 flex items-center space-x-2" href="/">
               <span className="hidden font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 sm:inline-block">
@@ -68,25 +68,25 @@ export default function BullsEyeAggregator() {
             </a>
             <nav className="flex items-center space-x-6 text-sm font-medium">
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
                 href="/markets"
               >
                 Markets
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
                 href="/news"
               >
                 News
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
                 href="/watchlist"
               >
                 Watchlist
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
                 href="/portfolio"
               >
                 Portfolio
@@ -142,7 +142,7 @@ export default function BullsEyeAggregator() {
         </div>
       </header>
       <main className="flex-1">
-        <div className="container grid gap-6 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px] py-8">
+        <div className="container grid gap-6 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px] py-8 ml-10">
           <div className="space-y-6">
             <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
               <CardHeader>
@@ -403,7 +403,7 @@ export default function BullsEyeAggregator() {
         <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
           <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
             <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              © 2023 BullsEye. All rights reserved.
+              {/* right */}
             </p>
           </div>
         </div>
