@@ -1,46 +1,41 @@
-// server.js (Backend with Express)
 const express = require("express");
+const next = require("next");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const bodyParser = require("body-parser");
+require('dotenv').config();
 
-const app = express();
-const port = process.env.PORT || 3000;
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-// Middleware to parse JSON request bodies
-app.use(bodyParser.json());
+app.prepare().then(() => {
+  const server = express();
 
-// Initialize Google Gemini API
-const apiKey = process.env.GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  // Chat API route for handling Gemini API interactions
+  server.post("/api/chat", async (req, res) => {
+    const { userMessage } = req.body;
 
-// API endpoint for chatbot
-app.post("/api/chat", async (req, res) => {
-  const userMessage = req.body.message;
-  if (!userMessage) {
-    return res.status(400).json({ error: "Message cannot be empty" });
-  }
-
-  try {
-    // Start the chat and send the message to Gemini API
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const chat = model.startChat({
       history: [
-        { role: "user", parts: [{ text: "Hello" }] },
-        { role: "model", parts: [{ text: "Great to meet you. What would you like to know?" }] },
+        { role: "user", parts: [{ text: userMessage }] },
       ],
     });
 
     let result = await chat.sendMessage(userMessage);
+    const responseText = await result.response.text();
 
-    // Return the chatbot response
-    res.json({ response: result.response.text() });
-  } catch (error) {
-    console.error("Error communicating with Gemini API:", error);
-    res.status(500).json({ error: "Failed to process your request." });
-  }
-});
+    res.json({ reply: responseText });
+  });
 
-// Start server
-app.listen(port, () => {
-  console.log(`Server listening on http://localhost:${port}`);
+  // Handle all other Next.js pages
+  server.all("*", (req, res) => {
+    return handle(req, res);
+  });
+
+  const port = process.env.PORT || 3000;
+  server.listen(port, (err) => {
+    if (err) throw err;
+    console.log(`> Ready on http://localhost:${port}`);
+  });
 });

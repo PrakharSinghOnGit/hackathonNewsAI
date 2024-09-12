@@ -21,6 +21,7 @@ import { TopMovers } from "./components/TopMovers";
 import { MarketIndices } from "./components/MarketIndices";
 import { Commodities } from "./components/Commodities";
 import { Currencies } from "./components/Currencies";
+import {Chat} from "./components/Chat";
 // const apiKey = "252ac6baf82444b199607c797e361e4e";
 const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
