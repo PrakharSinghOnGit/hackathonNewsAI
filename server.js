@@ -1,8 +1,7 @@
 const express = require("express");
 const next = require("next");
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
-
+const NewsAPI = require("newsapi");
+const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -10,22 +9,13 @@ const handle = app.getRequestHandler();
 app.prepare().then(() => {
   const server = express();
 
-  // Chat API route for handling Gemini API interactions
-  server.post("/api/chat", async (req, res) => {
-    const { userMessage } = req.body;
-
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const chat = model.startChat({
-      history: [
-        { role: "user", parts: [{ text: userMessage }] },
-      ],
+  server.get("/api/news", async (req, res) => {
+    const news = await newsapi.v2.topHeadlines({
+      q: "a",
+      language: "en",
+      sortBy: "relevancy",
     });
-
-    let result = await chat.sendMessage(userMessage);
-    const responseText = await result.response.text();
-
-    res.json({ reply: responseText });
+    res.send(news.articles);
   });
 
   // Handle all other Next.js pages

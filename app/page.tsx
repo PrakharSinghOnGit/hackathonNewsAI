@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import axios from "axios";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +20,7 @@ import { TopMovers } from "./components/TopMovers";
 import { MarketIndices } from "./components/MarketIndices";
 import { Commodities } from "./components/Commodities";
 import { Currencies } from "./components/Currencies";
-import {Chat} from "./components/Chat";
+import { Chat } from "./components/Chat";
 // const apiKey = "252ac6baf82444b199607c797e361e4e";
 const NewsAPI = require("newsapi");
 const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
@@ -42,45 +41,16 @@ export default function BullsEyeAggregator() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
 
-  // API parameters
-  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
-  const query = "finance"; // You can make this dynamic if needed
-  const category = "business";
-  const country = "us";
-  const language = "en";
+  const [data, setData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError("");
+    fetch("/api/news")
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
 
-      try {
-        newsapi.v2
-          .everything({
-            q: "a",
-            language: "en",
-            page: 1,
-          })
-          .then((response: any) => {
-            setNewsData(response.articles);
-          });
-      } catch (error) {
-        setError(error as React.SetStateAction<string | undefined>);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [query, category, country, language]);
-
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [darkMode]);
+  console.log(data);
 
   const handleSendMessage = () => {
     if (userInput.trim() === "") return;
@@ -98,6 +68,7 @@ export default function BullsEyeAggregator() {
     setChatMessages(newMessages);
     setUserInput("");
   };
+
   return (
     <div
       className={`flex flex-col min-h-screen bg-gradient-to-br ${
@@ -187,19 +158,21 @@ export default function BullsEyeAggregator() {
           </div>
         </div>
       </header>
-      <main className="flex-1 py-8">
-        <div className="container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
-          <div className="space-y-8">
-            <MarketSummary />
-            <NewsSection news={newsData} isLoading={isLoading} error={error} />
-            <TopMovers />
+      <main className="flex-1 p-8">
+        <main className="flex-1 p-8 flex justify-center">
+          <div className="container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
+            <div className="space-y-8">
+              <MarketSummary />
+              <NewsSection news={data} isLoading={isLoading} error={error} />
+              <TopMovers />
+            </div>
+            <div className="space-y-8">
+              <MarketIndices />
+              <Commodities />
+              <Currencies />
+            </div>
           </div>
-          <div className="space-y-8">
-            <MarketIndices />
-            <Commodities />
-            <Currencies />
-          </div>
-        </div>
+        </main>
       </main>
       <footer className="border-t bg-white/80 dark:bg-gray-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
         <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">

@@ -16,7 +16,7 @@ export const NewsSection = ({
   <Card className="mb-8">
     <CardHeader>
       <CardTitle className="text-2xl text-blue-600 dark:text-blue-400">
-        News
+        Industry Snapshot
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -40,7 +40,7 @@ export const NewsSection = ({
       ) : (
         <ul className="space-y-6">
           {newsData.map((item, index) => (
-            <NewsItem key={index} {...item} />
+            <NewsItem key={index} item={item} />
           ))}
         </ul>
       )}
