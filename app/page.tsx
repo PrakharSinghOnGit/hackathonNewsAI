@@ -85,25 +85,25 @@ export default function BullsEyeAggregator() {
             </a>
             <nav className="flex items-center space-x-6 text-base font-medium">
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="text-gray-950 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/markets"
               >
                 Markets
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="text-gray-950 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/news"
               >
                 News
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="text-gray-950 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/watchlist"
               >
                 Watchlist
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                className="text-gray-950 transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/portfolio"
               >
                 Portfolio
