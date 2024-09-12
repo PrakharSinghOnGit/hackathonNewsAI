@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +22,8 @@ import { MarketIndices } from "./components/MarketIndices";
 import { Commodities } from "./components/Commodities";
 import { Currencies } from "./components/Currencies";
 // const apiKey = "252ac6baf82444b199607c797e361e4e";
+const NewsAPI = require("newsapi");
+const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
 
 export default function BullsEyeAggregator() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -34,31 +37,41 @@ export default function BullsEyeAggregator() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+  const [newsData, setNewsData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | undefined>(undefined);
 
-  // Mock news data (replace with API call in production)
-  const newsData = [
-    {
-      title: "Tech Stocks Surge on AI Advancements",
-      content:
-        "Major tech companies see significant gains as AI capabilities expand...",
-      aiSummary:
-        "This news indicates a growing trend in AI investments, potentially leading to increased market valuations for tech companies with strong AI capabilities.",
-    },
-    {
-      title: "Federal Reserve Hints at Potential Rate Cut",
-      content:
-        "Markets react positively to Fed's latest statement on monetary policy...",
-      aiSummary:
-        "A potential rate cut could stimulate economic growth and boost stock markets, particularly benefiting sectors sensitive to interest rates like real estate and utilities.",
-    },
-    {
-      title: "Oil Prices Stabilize Amid Geopolitical Tensions",
-      content:
-        "Crude oil markets find balance despite ongoing conflicts in key regions...",
-      aiSummary:
-        "While current prices are stable, ongoing geopolitical issues could lead to future volatility in oil markets. Investors should monitor international developments closely.",
-    },
-  ];
+  // API parameters
+  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+  const query = "finance"; // You can make this dynamic if needed
+  const category = "business";
+  const country = "us";
+  const language = "en";
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError("");
+
+      try {
+        newsapi.v2
+          .everything({
+            q: "a",
+            language: "en",
+            page: 1,
+          })
+          .then((response: any) => {
+            setNewsData(response.articles);
+          });
+      } catch (error) {
+        setError(error as React.SetStateAction<string | undefined>);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [query, category, country, language]);
 
   useEffect(() => {
     if (darkMode) {
@@ -84,28 +97,6 @@ export default function BullsEyeAggregator() {
     setChatMessages(newMessages);
     setUserInput("");
   };
-
-  const NewsAPI = require("newsapi");
-  const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
-
-  function NewsApi() {
-    const [newsData, setNewsData] = useState([]);
-
-    useEffect(() => {
-      const fetchNews = async () => {
-        try {
-          const response = await fetch("https://newsapi.org/v2/top-headlines");
-          const data = await response.json();
-          setNewsData(data);
-        } catch (error) {
-          console.error("Error fetching news:", error);
-        }
-      };
-
-      fetchNews();
-    }, []);
-  }
-
   return (
     <div
       className={`flex flex-col min-h-screen bg-gradient-to-br ${
@@ -195,11 +186,11 @@ export default function BullsEyeAggregator() {
           </div>
         </div>
       </header>
-      <main className="flex-1 p-8 flex justify-center">
-        <div className="flex-1 container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
+      <main className="flex-1 py-8">
+        <div className="container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
           <div className="space-y-8">
             <MarketSummary />
-            <NewsSection news={newsData} />
+            <NewsSection news={newsData} isLoading={isLoading} error={error} />
             <TopMovers />
           </div>
           <div className="space-y-8">
