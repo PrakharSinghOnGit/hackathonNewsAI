@@ -1,0 +1,4 @@
+express 
+next 
+body-parser 
+@google/generative-ai
