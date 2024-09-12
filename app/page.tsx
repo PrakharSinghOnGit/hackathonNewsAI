@@ -1,11 +1,11 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { Bell, Search, Menu, MessageCircle, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { MarketSummary } from "./components/MarketSummary";
+import { NewsSection } from "./components/NewsSection";
+import { TopMovers } from "./components/TopMovers";
+import { MarketIndices } from "./components/MarketIndices";
+import { Commodities } from "./components/Commodities";
+import { Currencies } from "./components/Currencies";
+// const apiKey = "252ac6baf82444b199607c797e361e4e";
 
 export default function BullsEyeAggregator() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +34,31 @@ export default function BullsEyeAggregator() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+
+  // Mock news data (replace with API call in production)
+  const newsData = [
+    {
+      title: "Tech Stocks Surge on AI Advancements",
+      content:
+        "Major tech companies see significant gains as AI capabilities expand...",
+      aiSummary:
+        "This news indicates a growing trend in AI investments, potentially leading to increased market valuations for tech companies with strong AI capabilities.",
+    },
+    {
+      title: "Federal Reserve Hints at Potential Rate Cut",
+      content:
+        "Markets react positively to Fed's latest statement on monetary policy...",
+      aiSummary:
+        "A potential rate cut could stimulate economic growth and boost stock markets, particularly benefiting sectors sensitive to interest rates like real estate and utilities.",
+    },
+    {
+      title: "Oil Prices Stabilize Amid Geopolitical Tensions",
+      content:
+        "Crude oil markets find balance despite ongoing conflicts in key regions...",
+      aiSummary:
+        "While current prices are stable, ongoing geopolitical issues could lead to future volatility in oil markets. Investors should monitor international developments closely.",
+    },
+  ];
 
   useEffect(() => {
     if (darkMode) {
@@ -52,7 +84,27 @@ export default function BullsEyeAggregator() {
     setChatMessages(newMessages);
     setUserInput("");
   };
-  // const logo = Image.path("./logo.png");
+
+  const NewsAPI = require("newsapi");
+  const newsapi = new NewsAPI("252ac6baf82444b199607c797e361e4e");
+
+  function NewsApi() {
+    const [newsData, setNewsData] = useState([]);
+
+    useEffect(() => {
+      const fetchNews = async () => {
+        try {
+          const response = await fetch("https://newsapi.org/v2/top-headlines");
+          const data = await response.json();
+          setNewsData(data);
+        } catch (error) {
+          console.error("Error fetching news:", error);
+        }
+      };
+
+      fetchNews();
+    }, []);
+  }
 
   return (
     <div
@@ -61,35 +113,34 @@ export default function BullsEyeAggregator() {
       } transition-colors duration-200`}
     >
       <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
-        <div className="container flex h-14 items-center ml-10">
+        <div className="container flex h-16 items-center">
           <div className="mr-4 hidden md:flex">
             <a className="mr-6 flex items-center space-x-2" href="/">
-              <span className="hidden font-bold text-2xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 sm:inline-block">
+              <span className="hidden font-bold text-3xl bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-500 sm:inline-block">
                 BullsEye
               </span>
-              {/* <img src={logo} alt="Logo" className="h-6 w-6" /> */}
             </a>
-            <nav className="flex items-center space-x-6 text-sm font-medium">
+            <nav className="flex items-center space-x-6 text-base font-medium">
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/markets"
               >
                 Markets
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/news"
               >
                 News
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/watchlist"
               >
                 Watchlist
               </a>
               <a
-                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-black"
+                className="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 href="/portfolio"
               >
                 Portfolio
@@ -97,20 +148,19 @@ export default function BullsEyeAggregator() {
             </nav>
           </div>
           <Button
-            className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-9 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+            className="inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-10 py-2 mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <Menu className="h-6 w-6" />
             <span className="sr-only">Toggle Menu</span>
-            AI Assistant
           </Button>
           <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
             <div className="w-full flex-1 md:w-auto md:flex-none">
               <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-2 top-2.5 h-5 w-5 text-muted-foreground" />
                 <Input
                   placeholder="Search stocks, news..."
-                  className="pl-8 md:w-[300px] lg:w-[400px]"
+                  className="pl-10 pr-4 py-2 text-base md:w-[300px] lg:w-[400px]"
                 />
               </div>
             </div>
@@ -120,16 +170,16 @@ export default function BullsEyeAggregator() {
               onClick={() => setDarkMode(!darkMode)}
             >
               {darkMode ? (
-                <Sun className="h-4 w-4" />
+                <Sun className="h-5 w-5" />
               ) : (
-                <Moon className="h-4 w-4" />
+                <Moon className="h-5 w-5" />
               )}
               <span className="sr-only">Toggle theme</span>
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button size="icon" variant="ghost">
-                  <Bell className="h-4 w-4" />
+                  <Bell className="h-5 w-5" />
                   <span className="sr-only">Notifications</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -145,289 +195,45 @@ export default function BullsEyeAggregator() {
           </div>
         </div>
       </header>
-      <main className="flex-1">
-        <div className="container grid gap-6 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_250px] xl:grid-cols-[1fr_300px] py-8 ml-10">
-          <div className="space-y-6">
-            <Card className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
-              <CardHeader>
-                <CardTitle>AI Market Summary</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm">
-                  Based on today's market data and news, our AI predicts a
-                  cautiously optimistic outlook. Tech stocks are showing
-                  strength, particularly in the AI sector. The Federal Reserve's
-                  hints at a potential rate cut are positively influencing
-                  market sentiment. However, geopolitical tensions are creating
-                  some uncertainty in oil markets. Investors should watch for
-                  potential volatility in energy stocks and consider
-                  diversifying their portfolios.
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Hot News
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-4">
-                  <li>
-                    <h3 className="font-semibold text-purple-600 dark:text-purple-400">
-                      Tech Stocks Surge on AI Advancements
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Major tech companies see significant gains as AI
-                      capabilities expand...
-                    </p>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1 italic">
-                      AI Summary: This news indicates a growing trend in AI
-                      investments, potentially leading to increased market
-                      valuations for tech companies with strong AI capabilities.
-                    </p>
-                  </li>
-                  <li>
-                    <h3 className="font-semibold text-purple-600 dark:text-purple-400">
-                      Federal Reserve Hints at Potential Rate Cut
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Markets react positively to Fed's latest statement on
-                      monetary policy...
-                    </p>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1 italic">
-                      AI Summary: A potential rate cut could stimulate economic
-                      growth and boost stock markets, particularly benefiting
-                      sectors sensitive to interest rates like real estate and
-                      utilities.
-                    </p>
-                  </li>
-                  <li>
-                    <h3 className="font-semibold text-purple-600 dark:text-purple-400">
-                      Oil Prices Stabilize Amid Geopolitical Tensions
-                    </h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Crude oil markets find balance despite ongoing conflicts
-                      in key regions...
-                    </p>
-                    <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1 italic">
-                      AI Summary: While current prices are stable, ongoing
-                      geopolitical issues could lead to future volatility in oil
-                      markets. Investors should monitor international
-                      developments closely.
-                    </p>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Market Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[300px] w-full bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 rounded-lg flex items-center justify-center">
-                  [Market Overview Chart Placeholder]
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Top Movers
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-green-600 dark:text-green-400">
-                      Gainers
-                    </h4>
-                    <ul className="space-y-1">
-                      <li className="flex justify-between">
-                        <span>AAPL</span>
-                        <span className="text-green-600 dark:text-green-400">
-                          +5.2%
-                        </span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>GOOGL</span>
-                        <span className="text-green-600 dark:text-green-400">
-                          +3.8%
-                        </span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>TSLA</span>
-                        <span className="text-green-600 dark:text-green-400">
-                          +2.9%
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-red-600 dark:text-red-400">
-                      Losers
-                    </h4>
-                    <ul className="space-y-1">
-                      <li className="flex justify-between">
-                        <span>META</span>
-                        <span className="text-red-600 dark:text-red-400">
-                          -2.1%
-                        </span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>NFLX</span>
-                        <span className="text-red-600 dark:text-red-400">
-                          -1.7%
-                        </span>
-                      </li>
-                      <li className="flex justify-between">
-                        <span>AMZN</span>
-                        <span className="text-red-600 dark:text-red-400">
-                          -0.9%
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+      <main className="flex-1 p-8 flex justify-center">
+        <div className="flex-1 container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
+          <div className="space-y-8">
+            <MarketSummary />
+            <NewsSection news={newsData} />
+            <TopMovers />
           </div>
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Market Indices
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex justify-between">
-                    <span>S&P 500</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +0.8%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Dow Jones</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +0.5%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Nasdaq</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +1.2%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Russell 2000</span>
-                    <span className="text-red-600 dark:text-red-400">
-                      -0.3%
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Commodities
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex justify-between">
-                    <span>Gold</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +0.3%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Silver</span>
-                    <span className="text-red-600 dark:text-red-400">
-                      -0.1%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Crude Oil</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +1.5%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Natural Gas</span>
-                    <span className="text-red-600 dark:text-red-400">
-                      -0.7%
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-blue-600 dark:text-blue-400">
-                  Currencies
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  <li className="flex justify-between">
-                    <span>EUR/USD</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +0.2%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>GBP/USD</span>
-                    <span className="text-red-600 dark:text-red-400">
-                      -0.1%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>USD/JPY</span>
-                    <span className="text-green-600 dark:text-green-400">
-                      +0.3%
-                    </span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>USD/CHF</span>
-                    <span className="text-red-600 dark:text-red-400">
-                      -0.2%
-                    </span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
+          <div className="space-y-8">
+            <MarketIndices />
+            <Commodities />
+            <Currencies />
           </div>
         </div>
       </main>
       <footer className="border-t bg-white/80 dark:bg-gray-800/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-800/60">
         <div className="container flex flex-col items-center justify-between gap-4 py-10 md:h-24 md:flex-row md:py-0">
           <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
-            <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              {/* right */}
+            <p className="text-center text-base leading-loose text-muted-foreground md:text-left">
+              © 2023 BullsEye. All rights reserved.
             </p>
           </div>
         </div>
       </footer>
       <div
         className={`fixed bottom-4 right-4 z-50 ${
-          chatOpen ? "w-80" : "w-auto"
+          chatOpen ? "w-96" : "w-auto"
         }`}
       >
         {chatOpen ? (
           <Card className="w-full">
             <CardHeader className="flex flex-row items-center">
-              <CardTitle className="text-lg">AI Assistant</CardTitle>
+              <CardTitle className="text-xl">AI Assistant</CardTitle>
               <Button
                 size="icon"
                 variant="ghost"
                 className="ml-auto"
                 onClick={() => setChatOpen(false)}
               >
-                <X className="h-4 w-4" />
+                <X className="h-5 w-5" />
               </Button>
             </CardHeader>
             <CardContent>
@@ -459,7 +265,7 @@ export default function BullsEyeAggregator() {
                     placeholder="Ask about markets, stocks, or financial advice..."
                     value={userInput}
                     onChange={(e) => setUserInput(e.target.value)}
-                    className="flex-grow"
+                    className="flex-grow text-base"
                   />
                   <Button onClick={handleSendMessage}>Send</Button>
                 </div>
@@ -467,16 +273,13 @@ export default function BullsEyeAggregator() {
             </CardContent>
           </Card>
         ) : (
-          <div className="p-5 flex items-center justify-center space-x-4 rounded-full h-12 bg-blue-500 text-white">
-            <p className="text-center">Ai Assistant</p>
-            <Button
-              size="icon"
-              className=" w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white"
-              onClick={() => setChatOpen(true)}
-            >
-              <MessageCircle className="h-6 w-6" />
-            </Button>
-          </div>
+          <Button
+            size="icon"
+            className="rounded-full w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white"
+            onClick={() => setChatOpen(true)}
+          >
+            <MessageCircle className="h-7 w-7" />
+          </Button>
         )}
       </div>
     </div>
