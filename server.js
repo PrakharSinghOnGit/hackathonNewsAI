@@ -7,12 +7,14 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI("AIzaSyBMJ-qoYKSCGcYDJz25q5mBG70qcDMaY4w");
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
 
 async function getNews() {
   const news = await newsapi.v2.topHeadlines({
-    q: "finance",
+    q: "a",
+    // category: "",
     language: "en",
+    country: "us",
     sortBy: "relevancy",
   });
   return news.articles;
@@ -39,7 +41,7 @@ app.prepare().then(() => {
     const news = await getNews();
     let text = news.map((article) => article.title).join("\n");
     text =
-      "These Are Some News \n" + text + "\n Summarize Them in under 100 words";
+      "These Are Some News \n" + text + "\n Summarize Them in under 100 words, do not bold,italic or underline text in summary";
     const summary = await summarizeText(text);
     res.send(summary);
   });
