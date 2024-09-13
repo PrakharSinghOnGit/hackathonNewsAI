@@ -8,10 +8,12 @@ export const NewsSection = ({
   isLoading,
   error,
   setSumm,
+  setIsLoading,
 }: {
   isLoading: boolean;
   error?: string;
   setSumm: (data: string) => void;
+  setIsLoading: (loading: boolean) => void;
 }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
@@ -20,6 +22,7 @@ export const NewsSection = ({
       .then((data) => {
         setData(data.news);
         setSumm(data.summary);
+        setIsLoading(false);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);

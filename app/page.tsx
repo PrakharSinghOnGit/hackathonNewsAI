@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Bell, Search, Menu, MessageCircle, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,26 +33,50 @@ export default function BullsEyeAggregator() {
   ]);
   const [userInput, setUserInput] = useState("");
   const [darkMode, setDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | undefined>(undefined);
   const [summ, setSumm] = useState("");
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (userInput.trim() === "") return;
-
-    const newMessages = [
+    console.log("User input:", userInput);
+    let newMessages = [...chatMessages, { role: "user", content: userInput }];
+    setChatMessages(newMessages);
+    newMessages = [
       ...chatMessages,
-      { role: "user", content: userInput },
+      { role: "assistant", content: "thinking..." },
+    ];
+    setChatMessages(newMessages);
+    const responseData = await sendMsgToBackend(userInput);
+    chatMessages.pop();
+    newMessages = [
+      ...chatMessages,
       {
         role: "assistant",
-        content:
-          "I'm processing your request. Here's a simulated response based on your input: " +
-          userInput,
+        content: responseData.reply,
       },
     ];
     setChatMessages(newMessages);
     setUserInput("");
   };
+
+  async function sendMsgToBackend(msg: string) {
+    try {
+      const response = await fetch("/api/msg", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: msg }), // Send message as JSON
+      });
+
+      const responseData = await response.json();
+      console.log("Response from backend:", responseData);
+      return responseData;
+    } catch (error) {
+      console.error("Error sending message to backend:", error);
+    }
+  }
 
   return (
     <div
@@ -152,13 +176,14 @@ export default function BullsEyeAggregator() {
                 setSumm={setSumm}
                 isLoading={isLoading}
                 error={error}
+                setIsLoading={setIsLoading}
               />
-              <TopMovers />
             </div>
             <div className="space-y-8">
               <MarketIndices />
               <Commodities />
               <Currencies />
+              <TopMovers />
             </div>
           </div>
         </main>
