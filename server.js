@@ -16,18 +16,30 @@ const yahooFinance = require("yahoo-finance2").default;
 
 async function getStockData() {
   try {
-    const niftyData = await yahooFinance.quote("^NSEI");
-    const bankniftyData = await yahooFinance.quote("^NSEBANK");
-    const sensex = await yahooFinance.quote("BSESN");
-    const tatamotors = await yahooFinance.quote("TATAMOTORS.BO");
-    const gold = await yahooFinance.quote("XAU");
-    const silver = await yahooFinance.quote("XAG");
-    const crudeOil = await yahooFinance.quote("CL");
-    const natGas = await yahooFinance.quote("NG");
-    const eurusd = await yahooFinance.quote("DXY");
-    const gbpusd = await yahooFinance.quote("GBPUSD");
-    const usdjpy = await yahooFinance.quote("JPY");
-    const usdchf = await yahooFinance.quote("USDCHF=X");
+    // const niftyData = await yahooFinance.quote("^NSEI");
+    // const bankniftyData = await yahooFinance.quote("^NSEBANK");
+    // const sensex = await yahooFinance.quote("BSESN");
+    // const tatamotors = await yahooFinance.quote("TATAMOTORS.BO");
+    // const gold = await yahooFinance.quote("XAU");
+    // const silver = await yahooFinance.quote("XAG");
+    // const crudeOil = await yahooFinance.quote("CL");
+    // const natGas = await yahooFinance.quote("NG");
+    // const eurusd = await yahooFinance.quote("DXY");
+    // const gbpusd = await yahooFinance.quote("GBPUSD");
+    // const usdjpy = await yahooFinance.quote("JPY");
+    // const usdchf = await yahooFinance.quote("USDCHF=X");
+    const niftyData = 25372.5;
+    const bankniftyData = 51772.5;
+    const sensex = 82933.53;
+    const tatamotors = 997;
+    const gold = 74240;
+    const silver = 89500;
+    const crudeOil = 69.435;
+    const natGas = 198.52;
+    const eurusd = 93.03;
+    const gbpusd = 110.28;
+    const usdjpy = 83.17;
+    const usdchf = 83.71;
 
     return {
       Index: [
