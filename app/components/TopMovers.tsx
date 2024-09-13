@@ -1,7 +1,7 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 // Top Movers Component
-export const TopMovers = () => (
+export const TopMovers = ({ Movers }: { Movers: any }) => (
   <Card className="mb-8">
     <CardHeader>
       <CardTitle className="text-2xl text-blue-600 dark:text-blue-400">
@@ -16,16 +16,22 @@ export const TopMovers = () => (
           </h4>
           <ul className="space-y-2">
             <li className="flex justify-between text-lg">
-              <span>AAPL</span>
-              <span className="text-green-600 dark:text-green-400">+5.2%</span>
+              <span>{Movers.gain[0].name}</span>
+              <span className="text-green-600 dark:text-green-400">
+                {Movers.gain[0].chg}
+              </span>
             </li>
             <li className="flex justify-between text-lg">
-              <span>GOOGL</span>
-              <span className="text-green-600 dark:text-green-400">+3.8%</span>
+              <span>{Movers.gain[1].name}</span>
+              <span className="text-green-600 dark:text-green-400">
+                {Movers.gain[1].chg}
+              </span>
             </li>
             <li className="flex justify-between text-lg">
-              <span>TSLA</span>
-              <span className="text-green-600 dark:text-green-400">+2.9%</span>
+              <span>{Movers.gain[2].name}</span>
+              <span className="text-green-600 dark:text-green-400">
+                {Movers.gain[2].chg}
+              </span>
             </li>
           </ul>
         </div>
@@ -35,16 +41,22 @@ export const TopMovers = () => (
           </h4>
           <ul className="space-y-2">
             <li className="flex justify-between text-lg">
-              <span>META</span>
-              <span className="text-red-600 dark:text-red-400">-2.1%</span>
+              <span>{Movers.lose[0]}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {Movers.lose[0].chg}
+              </span>
             </li>
             <li className="flex justify-between text-lg">
-              <span>NFLX</span>
-              <span className="text-red-600 dark:text-red-400">-1.7%</span>
+              <span>{Movers.lose[1]}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {Movers.lose[0].chg}
+              </span>
             </li>
             <li className="flex justify-between text-lg">
-              <span>AMZN</span>
-              <span className="text-red-600 dark:text-red-400">-0.9%</span>
+              <span>{Movers.lose[2]}</span>
+              <span className="text-red-600 dark:text-red-400">
+                {Movers.lose[0].chg}
+              </span>
             </li>
           </ul>
         </div>

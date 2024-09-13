@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, Search, Menu, MessageCircle, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,12 @@ import { MarketIndices } from "./components/MarketIndices";
 import { Commodities } from "./components/Commodities";
 import { Currencies } from "./components/Currencies";
 
+type StockData = {
+  Index: number[];
+  Commo: number[];
+  Curr: number[];
+};
+
 export default function BullsEyeAggregator() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
@@ -40,25 +46,42 @@ export default function BullsEyeAggregator() {
   const handleSendMessage = async () => {
     if (userInput.trim() === "") return;
     console.log("User input:", userInput);
-    let newMessages = [...chatMessages, { role: "user", content: userInput }];
-    setChatMessages(newMessages);
-    newMessages = [
+    const newMessages = [
       ...chatMessages,
-      { role: "assistant", content: "thinking..." },
+      { role: "user", content: userInput },
+      {
+        role: "assistant",
+        content: "thinking...",
+      },
     ];
     setChatMessages(newMessages);
     const responseData = await sendMsgToBackend(userInput);
-    chatMessages.pop();
-    newMessages = [
-      ...chatMessages,
+    const updatedMessages = [
+      ...newMessages,
       {
         role: "assistant",
         content: responseData.reply,
       },
     ];
-    setChatMessages(newMessages);
+    setChatMessages(updatedMessages);
     setUserInput("");
   };
+
+  const [tick, setTick] = useState<StockData>({
+    Index: [],
+    Commo: [],
+    Curr: [],
+  });
+  useEffect(() => {
+    fetch("/api/tick")
+      .then((response) => response.json())
+      .then((data) => {
+        setTick(data);
+      })
+      .catch((error) => console.error("Error fetching data:", error));
+  }, []);
+
+  console.log("tick", tick);
 
   async function sendMsgToBackend(msg: string) {
     try {
@@ -180,10 +203,10 @@ export default function BullsEyeAggregator() {
               />
             </div>
             <div className="space-y-8">
-              <MarketIndices />
-              <Commodities />
-              <Currencies />
-              <TopMovers />
+              <MarketIndices Index={tick.Index} />
+              <Commodities Commo={tick.Commo} />
+              <Currencies Curr={tick.Curr} />
+              {/* <TopMovers Movers={} /> */}
             </div>
           </div>
         </main>

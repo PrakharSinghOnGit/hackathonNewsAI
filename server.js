@@ -12,6 +12,52 @@ const fs = require("fs");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(GOOGLE_API);
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const yahooFinance = require("yahoo-finance2").default;
+
+async function getStockData() {
+  try {
+    const niftyData = await yahooFinance.quote("^NSEI");
+    const bankniftyData = await yahooFinance.quote("^NSEBANK");
+    const sensex = await yahooFinance.quote("BSESN");
+    const tatamotors = await yahooFinance.quote("TATAMOTORS.BO");
+    const gold = await yahooFinance.quote("XAU");
+    const silver = await yahooFinance.quote("XAG");
+    const crudeOil = await yahooFinance.quote("CL");
+    const natGas = await yahooFinance.quote("NG");
+    const eurusd = await yahooFinance.quote("DXY");
+    const gbpusd = await yahooFinance.quote("GBPUSD");
+    const usdjpy = await yahooFinance.quote("JPY");
+    const usdchf = await yahooFinance.quote("USDCHF=X");
+
+    return {
+      Index: [
+        niftyData.regularMarketPrice,
+        bankniftyData.regularMarketPrice,
+        sensex.regularMarketPrice,
+        tatamotors.regularMarketPrice,
+      ],
+      Commo: [
+        gold.regularMarketPrice,
+        silver.regularMarketPrice,
+        crudeOil.regularMarketPrice,
+        natGas.regularMarketPrice,
+      ],
+      Curr: [
+        eurusd.regularMarketPrice,
+        gbpusd.regularMarketPrice,
+        usdjpy.regularMarketPrice,
+        usdchf.regularMarketPrice,
+      ],
+    };
+  } catch (error) {
+    console.error("Error fetching stock data:", error);
+    return {
+      Index: [],
+      Commo: [],
+      Curr: [],
+    };
+  }
+}
 
 async function getNews(limit) {
   const news = await newsapi.v2.everything({
@@ -50,6 +96,11 @@ app.prepare().then(() => {
     res.send({ news: news, summary: summary });
   });
 
+  server.get("/api/tick", async (req, res) => {
+    const tick = await getStockData();
+    res.send(tick);
+  });
+
   server.post("/api/msg", async (req, res) => {
     const receivedMsg = req.body;
     let allNews = JSON.parse(fs.readFileSync("news.json"));
@@ -58,10 +109,10 @@ app.prepare().then(() => {
     const prompt =
       "These Are Some News \n" +
       newses +
-      "And i want to ask you about these news\n" +
+      "And i want to ask you about these news, If there is no news related to what I ask you can use your own database/dataset or maybe use internet to answer my query.\n" +
       receivedMsg.message +
       "\n" +
-      "make the ans as short as possible and do not bold,italic or underline text\n" +
+      "make the answers as short as possible and do not bold,italic or underline text\n" +
       "also if there is any question outside the scope of news please answer it";
     let respo = await summarizeText(prompt);
     console.log("Chat Msg Reply:", respo);
