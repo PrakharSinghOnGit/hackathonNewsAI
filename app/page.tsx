@@ -35,26 +35,7 @@ export default function BullsEyeAggregator() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [data, setData] = useState([]);
   const [summ, setSumm] = useState("");
-
-  useEffect(() => {
-    fetch("/api/news")
-      .then((response) => response.json())
-      .then((data) => setData(data))
-      .then(() => {
-        requestSumm();
-      })
-      .catch((error) => console.error("Error fetching data:", error));
-  }, []);
-
-  console.log(data);
-  function requestSumm() {
-    fetch("/api/summ")
-      .then((response) => response.text())
-      .then((data) => setSumm(data))
-      .catch((error) => console.error("Error fetching data:", error));
-  }
 
   const handleSendMessage = () => {
     if (userInput.trim() === "") return;
@@ -167,7 +148,11 @@ export default function BullsEyeAggregator() {
           <div className="container grid gap-8 md:grid-cols-[1fr_300px] lg:grid-cols-[1fr_350px]">
             <div className="space-y-8">
               <MarketSummary Summary={summ} />
-              <NewsSection news={data} isLoading={isLoading} error={error} />
+              <NewsSection
+                setSumm={setSumm}
+                isLoading={isLoading}
+                error={error}
+              />
               <TopMovers />
             </div>
             <div className="space-y-8">
